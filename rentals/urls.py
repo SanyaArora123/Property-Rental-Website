@@ -17,7 +17,7 @@ Including another URLconf
 
 # urls.py
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from myapp import views
 from django.contrib.auth.views import LogoutView, LoginView
@@ -25,7 +25,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
     path('', views.home, name='home'),
-    path('admin/', admin.site.urls),
+    
     path('register/', views.register, name='register'),
     path('loginUser/', auth_views.LoginView.as_view(template_name='myapp/loginUser.html'), name='loginUser'),
     path('logOut/', views.logOut, name='logOut'),
@@ -34,6 +34,9 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('property_detail/<int:Pid>/', views.property_detail, name='property_detail'),
     path('add-property/', views.add_property, name='add_property'),
+    
+   
+    path('admin/', admin.site.urls),
 ]
 
 if settings.DEBUG:

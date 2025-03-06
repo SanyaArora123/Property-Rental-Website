@@ -7,24 +7,45 @@
         {% for property in page_obj %}
         <div class="col">
             <div class="card h-100 shadow-sm">
-                {% if property.image1 %}
-                    <img src="{{ property.image1.url }}" class="card-img-top" alt="{{ property.title }}" style="height: 200px; object-fit: cover;">
-                {% else %}
-                    <div class="bg-light text-center p-5">
-                        <i class="bi bi-house-door" style="font-size: 3rem;"></i>
-                        <p class="mt-2">No image available</p>
-                    </div>
-                {% endif %}
+                <div class="card-img-top">
+                    {% if property.get_images %}
+                        {% if property.get_images|length > 1 %}
+                            <div id="propertyCarousel{{ property.id }}" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    {% for image in property.get_images %}
+                                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                            <img src="{{ image.url }}" class="d-block w-100" alt="{{ property.title }}" style="height: 200px; object-fit: cover;">
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {% if property.get_images|length > 1 %}
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel{{ property.id }}" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel{{ property.id }}" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <img src="{{ property.get_images.0.url }}" class="card-img-top" alt="{{ property.title }}" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                    {% else %}
+                        <div class="bg-light text-center p-5">
+                            <i class="bi bi-house-door" style="font-size: 3rem;"></i>
+                            <p class="mt-2">No images available</p>
+                        </div>
+                    {% endif %}
+                </div>
                 <div class="card-body">
                     <h5 class="card-title">{{ property.title }}</h5>
                     <p class="card-text">
-                        <i class="bi bi-geo-alt-fill text-primary"></i> {{ property.city }}, {{ property.state }}
+                        {{ property.description|truncatewords:20 }}
                     </p>
                     <p class="card-text">
-                        <span class="badge bg-primary">{{ property.property_type }}</span>
-                        {% if property.area_sqft %}
-                            <span class="badge bg-info text-dark">{{ property.area_sqft }} sq.ft.</span>
-                        {% endif %}
+                        <i class="bi bi-geo-alt-fill text-primary"></i> {{ property.house_address }}, {{ property.city }}, {{ property.state }}
                     </p>
                     <h6 class="card-subtitle mb-2 text-primary">₹{{ property.rental_amount }}<span class="text-muted fs-6">/month</span></h6>
                 </div>
