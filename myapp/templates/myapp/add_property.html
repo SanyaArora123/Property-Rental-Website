@@ -1,0 +1,11 @@
+{% extends 'myapp/home.html' %}
+{% block content %}
+{% include 'myapp/navbar.html' %}
+<h2>Add Property</h2>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Property</button>
+</form>
+{% include 'myapp/footer.html' %}
+{% endblock %}

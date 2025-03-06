@@ -1,0 +1,62 @@
+{% extends 'myapp/home.html' %}
+
+{% block content %}
+{% include 'myapp/navbar.html' %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Become a Seller</h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead mb-4">Register as a property seller to list your properties on our platform.</p>
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="form-group mb-3">
+                            <label for="{{ form.phone.id_for_label }}">Phone Number:</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <div class="text-danger">
+                                    {{ form.phone.errors }}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">Enter a valid phone number. This will be used by potential tenants to contact you.</small>
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <label for="{{ form.photo.id_for_label }}">Profile Photo:</label>
+                            {{ form.photo }}
+                            {% if form.photo.errors %}
+                                <div class="text-danger">
+                                    {{ form.photo.errors }}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">Upload a professional profile photo. This helps build trust with potential tenants.</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-lg">Register as Seller</button>
+                            <a href="{% url 'home' %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer bg-light">
+                    <p class="mb-0"><strong>Note:</strong> By registering as a seller, you agree to our <a href="#">Terms of Service</a> for property listings.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'myapp/navbar.html' %}
+{% endblock %}

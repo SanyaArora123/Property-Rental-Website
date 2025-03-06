@@ -1,0 +1,259 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ rent.title }} - Prime Rentals</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .thumbnail-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .thumbnail-item {
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            border: 2px solid #dee2e6;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: all 0.2s ease-in-out;
+        }
+        .thumbnail-item:hover {
+            border-color: #0d6efd;
+            transform: scale(1.05);
+        }
+        .thumbnail-item.active {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+        }
+        .thumbnail-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .property-image-container {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .property-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Header/Navbar (include if you have one) -->
+    {% include 'myapp/navbar.html' %}
+
+    <!-- Property Title Section -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center mb-4">{{ rent.title }}</h1>
+                <p class="text-center text-muted mb-4">
+                    <i class="bi bi-geo-alt-fill"></i> {{ rent.house_address }}, {{ rent.city }}, {{ rent.state }}, {{ rent.pincode }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Property Images Carousel -->
+    
+
+    <!-- Property Details and Seller Info -->
+    <div class="container mb-5">
+        <div class="row">
+            <!-- Property Details - Left Column -->
+            <div class="col-lg-8 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">Property Details</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h4 class="text-primary">&#x20B9;{{ rent.rental_amount }}<span class="text-muted fs-6">/month</span></h4>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <span class="badge bg-secondary">{{ rent.property_type }}</span>
+                                <span class="badge bg-info text-dark">{{ rent.area_sqft }} sq.ft.</span>
+                            </div>
+                        </div>
+
+                        <!-- Image Gallery Section -->
+                        {% if rent.get_images %}
+                            <h5 class="mb-3">Property Images</h5>
+                            <div class="property-gallery">
+                                <div class="property-image-container">
+                                    <img id="featured-image" src="{{ rent.get_images.0.url }}" alt="{{ rent.title }} - Featured Image">
+                                </div>
+                                <div class="thumbnail-gallery">
+                                    {% for image in rent.get_images %}
+                                        <div class="thumbnail-item {% if forloop.first %}active{% endif %}" data-image-url="{{ image.url }}">
+                                            <img src="{{ image.url }}" alt="{{ rent.title }} - Thumbnail {{ forloop.counter }}">
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <h5 class="mt-4 mb-3">Description</h5>
+                        <p class="mb-4">{{ rent.description }}</p>
+
+                        <h5 class="mb-3">Property Information</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-house-door fs-4 text-primary"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0">Property Type</h6>
+                                        <p class="text-muted">{{ rent.property_type }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-arrows-fullscreen fs-4 text-primary"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0">Area</h6>
+                                        <p class="text-muted">{{ rent.area_sqft }} sq.ft.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-geo-alt fs-4 text-primary"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0">Address</h6>
+                                        <p class="text-muted">{{ rent.house_address }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-pin-map fs-4 text-primary"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0">Location</h6>
+                                        <p class="text-muted">{{ rent.city }}, {{ rent.state }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-mailbox fs-4 text-primary"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0">Pincode</h6>
+                                        <p class="text-muted">{{ rent.pincode }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-calendar-date fs-4 text-primary"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0">Listed On</h6>
+                                        <p class="text-muted">{{ rent.created_at|date:"F d, Y" }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seller Information - Right Column -->
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">Seller Information</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="mb-4">
+                            {% if rent.seller.photo %}
+                                <img src="{{ rent.seller.photo.url }}" alt="{{ rent.seller.user.username }}" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                            {% else %}
+                                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 150px; height: 150px;">
+                                    <i class="bi bi-person-fill fs-1 text-secondary"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <h4 class="mb-3">{{ rent.seller.user.get_full_name|default:rent.seller.user.username }}</h4>
+                        <p class="text-muted mb-4">Property Owner</p>
+
+                        <div class="d-grid gap-2 mb-4">
+                            <a href="tel:{{ rent.seller.phone }}" class="btn btn-outline-primary">
+                                <i class="bi bi-telephone-fill me-2"></i>{{ rent.seller.phone }}
+                            </a>
+                            <a href="mailto:{{ rent.seller.user.email }}" class="btn btn-outline-primary">
+                                <i class="bi bi-envelope-fill me-2"></i>Contact via Email
+                            </a>
+                        </div>
+
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Rental Information</h5>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Rental Amount:</span>
+                                    <span class="fw-bold">&#x20B9;{{ rent.rental_amount }}/month</span>
+                                </div>
+                                <hr>
+                                <p class="card-text small text-muted mb-0">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Contact the owner directly to inquire about viewing the property or to discuss rental terms.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer (include if you have one) -->
+    {% include 'myapp/footer.html' %}
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS for Image Gallery -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const thumbnails = document.querySelectorAll('.thumbnail-item');
+            const featuredImage = document.getElementById('featured-image');
+            
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', function() {
+                    // Update featured image
+                    featuredImage.src = this.dataset.imageUrl;
+                    
+                    // Update active state
+                    thumbnails.forEach(item => item.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
