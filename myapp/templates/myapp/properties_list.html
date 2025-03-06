@@ -1,16 +1,100 @@
 {% extends 'myapp/home.html' %}
 {% block content %}
-<h2>Available Properties</h2>
-<ul>
-    {% for property in properties %}
-        <li>
-            <h3>{{ property.title }}</h3>
-            <p>Location: {{ property.city }}, {{ property.state }}</p>
-            <p>Rental Amount: ₹{{ property.rental_amount }}</p>
-            {% if property.image1 %}
-                <img src="{{ property.image1.url }}" width="200">
+<div class="container py-4">
+    <h2 class="mb-4 text-center">Available Properties</h2>
+    
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for property in page_obj %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if property.image1 %}
+                    <img src="{{ property.image1.url }}" class="card-img-top" alt="{{ property.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <div class="bg-light text-center p-5">
+                        <i class="bi bi-house-door" style="font-size: 3rem;"></i>
+                        <p class="mt-2">No image available</p>
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ property.title }}</h5>
+                    <p class="card-text">
+                        <i class="bi bi-geo-alt-fill text-primary"></i> {{ property.city }}, {{ property.state }}
+                    </p>
+                    <p class="card-text">
+                        <span class="badge bg-primary">{{ property.property_type }}</span>
+                        {% if property.area_sqft %}
+                            <span class="badge bg-info text-dark">{{ property.area_sqft }} sq.ft.</span>
+                        {% endif %}
+                    </p>
+                    <h6 class="card-subtitle mb-2 text-primary">₹{{ property.rental_amount }}<span class="text-muted fs-6">/month</span></h6>
+                </div>
+                <div class="card-footer bg-white">
+                    <a href="{% url 'property_detail' property.id %}" class="btn btn-outline-primary w-100">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i> No properties available at the moment.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">&laquo;&laquo;</span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">&laquo;</span>
+            </li>
             {% endif %}
-        </li>
-    {% endfor %}
-</ul>
+            
+            {% for i in page_obj.paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">&raquo;</span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">&raquo;&raquo;</span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
 {% endblock %}
